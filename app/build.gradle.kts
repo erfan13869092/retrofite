@@ -3,6 +3,8 @@ plugins {
     libs.apply {
         alias(plugins.androidApplication)
         alias(plugins.kotlinAndroid)
+        alias(plugins.ksp)
+        alias(plugins.hilt.plugin)
     }
 }
 
@@ -36,6 +38,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -48,5 +53,8 @@ dependencies {
         androidTestImplementation(androidx.test.ext.junit)
         androidTestImplementation(espresso.core)
         implementation(bundles.newtwork)
+        implementation(bundles.navigation)
+        implementation(libs.hilt.android)
+        ksp(libs.hilt.kapt)
     }
 }
