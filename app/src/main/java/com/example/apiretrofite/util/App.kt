@@ -1,4 +1,4 @@
-package com.example.myapplication.util
+package com.example.apiretrofite.util
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

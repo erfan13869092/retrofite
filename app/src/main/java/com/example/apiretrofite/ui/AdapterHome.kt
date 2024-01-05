@@ -3,21 +3,21 @@ package com.example.apiretrofite.ui
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.apiretrofite.data.model.ParentCoinItem
 import com.example.apiretrofite.databinding.LayoutAdapterBinding
 
 class AdapterHome(
 ) : RecyclerView.Adapter<AdapterHome.ViewHolder>() {
-//    var task = ArrayList<ToDo>()
-//        set(value) {
-//            field = value
-//            notifyDataSetChanged()
-//        }
+    var coins = ArrayList<ParentCoinItem>()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     inner class ViewHolder(val binding: LayoutAdapterBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind() {
-
-
+        fun bind(parentCoinItem: ParentCoinItem) {
+            binding.checkedTextView.text=parentCoinItem.name
         }
     }
 
@@ -25,9 +25,9 @@ class AdapterHome(
         LayoutAdapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
 
-    override fun getItemCount(): Int = 2
+    override fun getItemCount(): Int = coins.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind()
+        holder.bind(coins[position])
     }
 }

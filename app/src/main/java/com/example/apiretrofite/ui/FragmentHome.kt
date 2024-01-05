@@ -1,15 +1,20 @@
 package com.example.apiretrofite.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.apiretrofite.data.model.ParentCoinItem
 import com.example.apiretrofite.databinding.FragmentHomeBinding
-import com.example.myapplication.ui.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 @AndroidEntryPoint
 class FragmentHome : Fragment() {
@@ -31,24 +36,36 @@ class FragmentHome : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setRecyclerView()
         onClick()
-        getHomeTasks()
-//        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED){
-//                repeat(90000000) {
-//                    val todo = ToDo(name = "rahim $it")
-//                    viewModel.addTodo(todo)
-//                }
-//            }
-//        }
-
+        getCoins()
     }
 
-    private fun getHomeTasks() {
+    private fun getCoins() {
+        viewModel.coins.observe(viewLifecycleOwner) {
+            it?.let {
+                it.enqueue(object : Callback<List<ParentCoinItem>> {
+                    override fun onResponse(
+                        call: Call<List<ParentCoinItem>>,
+                        response: Response<List<ParentCoinItem>>
+                    ) {
+                        if (response.isSuccessful) {
+                            Log.d("coinsApi", "success api->${response.body()}")
+                            adapterHome.coins = ArrayList(response.body()!!)
+                        }else{
+                            Log.d("coinsApi", "error api->${response.errorBody()}")
+                        }
+                    }
 
+                    override fun onFailure(call: Call<List<ParentCoinItem>>, t: Throwable) {
+                        Log.d("coinsApi", "error message->${t.message}")
+                    }
+                })
+            }
+        }
     }
 
     private fun onClick() {
         binding.flbtnFragmentHomeAddTask.setOnClickListener {
+            Toast.makeText(requireContext(),"clicked",Toast.LENGTH_SHORT).show()
         }
     }
 
