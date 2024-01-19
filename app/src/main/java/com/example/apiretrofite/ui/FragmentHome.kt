@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.apiretrofite.data.model.ParentCoinItem
 import com.example.apiretrofite.databinding.FragmentHomeBinding
+import com.example.apiretrofite.util.StateResponse
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
 import retrofit2.Callback
@@ -42,23 +43,20 @@ class FragmentHome : Fragment() {
     private fun getCoins() {
         viewModel.coins.observe(viewLifecycleOwner) {
             it?.let {
-                it.enqueue(object : Callback<List<ParentCoinItem>> {
-                    override fun onResponse(
-                        call: Call<List<ParentCoinItem>>,
-                        response: Response<List<ParentCoinItem>>
-                    ) {
-                        if (response.isSuccessful) {
-                            Log.d("coinsApi", "success api->${response.body()}")
-                            adapterHome.coins = ArrayList(response.body()!!)
-                        }else{
-                            Log.d("coinsApi", "error api->${response.errorBody()}")
+                Log.d("coinsApi", "success api->${it}")
+                when(it){
+                    is StateResponse.Loading->{
+                        Toast.makeText(requireContext(),"loading",Toast.LENGTH_LONG).show()
+                    }
+                    is StateResponse.Success->{
+                        it.data?.let {
+                            adapterHome.coins = ArrayList(it)
                         }
                     }
-
-                    override fun onFailure(call: Call<List<ParentCoinItem>>, t: Throwable) {
-                        Log.d("coinsApi", "error message->${t.message}")
+                    is StateResponse.Error->{
+                        Toast.makeText(requireContext(),"${it.message}",Toast.LENGTH_LONG).show()
                     }
-                })
+                }
             }
         }
     }

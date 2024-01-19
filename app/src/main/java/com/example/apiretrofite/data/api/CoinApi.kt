@@ -6,5 +6,5 @@ import retrofit2.http.GET
 
 interface CoinApi {
     @GET("coins/list")
-    fun getCoins(): Call<List<ParentCoinItem>>
+    suspend fun getCoins(): List<ParentCoinItem>
 }
